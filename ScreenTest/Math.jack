@@ -1,0 +1,125 @@
+/**
+* JackOS Math.jack, an implementation of the JackOS's math library in Jack.
+* Provides a 16-bit virtualization of math functions
+*/
+
+class Math {
+
+	static Array jackNum;
+	
+	function void init() {
+		let jackNum = Array.new(16);
+		let jackNum[0] = 1;
+		let jackNum[1] = 2;
+		let jackNum[2] = 4;
+		let jackNum[3] = 8;
+		let jackNum[4] = 16;
+		let jackNum[5] = 32;
+		let jackNum[6] = 64;
+		let jackNum[7] = 128;
+		let jackNum[8] = 256;
+		let jackNum[9] = 512;
+		let jackNum[10] = 1024;
+		let jackNum[11] = 2048;
+		let jackNum[12] = 4096;
+		let jackNum[13] = 8192;
+		let jackNum[14] = 16384;
+		let jackNum[15] = 16384 + 16384;
+		return;
+	}
+
+	function int powerofTwo(int num) {
+		return jackNum[num];
+	}
+
+	function int abs(int x) {
+		if (x < 0) {
+		    let x = -x;
+		}
+		return x;
+	}
+
+	function boolean bit(int x, int j) {
+	     return ~((x & jackNum[j]) = 0);
+	}
+
+	function int min(int x, int y) {
+		if(x < y) {
+			return x;
+		}
+		return y;
+	}
+
+	function int max(int x, int y) {
+		if(x > y) {
+			return x;
+		}
+		
+		return y;
+	}
+
+
+	/*
+	* Algorithm for multiplication as shown in Figure 12.1
+	*
+	*/
+	function int multiply(int x, int y) {
+		var int j, product, shiftx;
+		let j = 0;
+		let product = 0;
+		let shiftx = x;
+		while (j < 16) {
+			if(Math.bit(y,j)) {
+				let product = product + shiftx;
+			}	
+			let shiftx = shiftx + shiftx;
+			let j = j + 1;
+		}
+		return product;
+
+	}
+
+
+	function int divide(int x, int y) {
+		var int quot, result;
+		var boolean sign;
+		if( y > x ) { return 0; }
+		let sign = false;
+		if( ((y < 0 ) & (x < 0)) | ((y > 0) & (x > 0))) {
+			let sign = true;
+		}
+		let x = Math.abs(x);
+		let y = Math.abs(y);
+		let quot = Math.divide(x, y + y);
+		
+		if ( (x - ( 2 * quot * y)) < y) {
+
+			let result = (2 * quot);
+		}
+		else { let result = ((2 * quot) + 1); }
+
+		if(sign) {
+			return result;
+		}
+		else { return -result; }
+	}
+
+	function int sqrt(int x) {
+		var int y, j, temp, tempSq;
+		let y = 0;
+		let j = 7;
+
+		while((j > 0) | (j = 0)) {
+			let temp = y + jackNum[j];
+			let tempSq = temp * temp;
+				
+			if(~((tempSq < x) | (tempSq = x)) & (tempSq > 0)) { let y = temp; }
+			let j = j - 1;
+
+		}
+
+		return y;
+	}
+
+	
+}
